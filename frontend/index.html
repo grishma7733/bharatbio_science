@@ -1,0 +1,32 @@
+// index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' http://${localIP}:4000; font-src 'self' data: https://fonts.googleapis.com https://fonts.gstatic.com;">
+    <title>Product Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css"> 
+</head>
+<body>
+    <div class="container">
+        <h1 id="product-name"></h1>
+        <img id="product-image" src="" alt="Product Image">
+        <p><strong>Batch No:</strong> <span id="batch-no"></span></p>
+        <p><strong>Manufacturing Date:</strong> <span id="manufacturing-date"></span></p>
+        <p><strong>Expiration Date:</strong> <span id="expiration-date"></span></p>
+        <p><strong>MRP:</strong> ₹<span id="mrp"></span></p>
+        <p><strong>Registration No:</strong> <span id="registration-no"></span></p>
+        <p><strong>Manufacturer:</strong> <span id="manufacturer"></span></p>
+        <p><strong>Marketed By:</strong> <span id="marketed-by"></span></p>
+        <p><strong>Antidote Statement:</strong> <span id="antidote-statement"></span></p>
+        <p><strong>Email:</strong> <span id="email"></span></p>
+        <p><strong>Phone:</strong> <span id="phone"></span></p>
+        <p><strong>Address:</strong> <span id="address"></span></p>
+        <p><strong>Leaflet:</strong> <a id="leaflet-link" href="#" target="_blank">Download</a></p>
+        <p><strong>Label:</strong> <a id="label-link" href="#" target="_blank">Download</a></p>
+    </div>
+    <script src="/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#product-image {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+.details p {
+    margin: 10px 0;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.error {
+    color: red;
+    text-align: center;
+    padding: 20px;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
