@@ -1,5 +1,5 @@
 const express = require('express');
-const mysql = require('mysql2');
+const { Client } = require('pg');
 const cors = require('cors');
 const path = require('path');
 const QRCode = require('qrcode');
@@ -7,7 +7,8 @@ const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
-const DEPLOYED_FRONTEND_URL = "https://bharatbioscience.com"; 
+
+const DEPLOYED_FRONTEND_URL = "https://bharatbioscience.com";
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/view/product', express.static(path.join(__dirname, 'public')));
 
@@ -53,21 +54,19 @@ app.get("/", (req, res) => {
 });
 
 // ✅ Fixed Database Connection Issue
-const pool = mysql.createPool({
+const client = new Client({
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-}).promise();
+  });
 
 // ✅ Check if the database is connected
-pool.getConnection()
-    .then(() => console.log("[SUCCESS] Connected to Database"))
-    .catch(err => console.error("[ERROR] Database connection failed:", err.message));
-
+client.connect()
+  .then(() => console.log('Connected to Supabase Database'))
+  .catch(err => console.error('Connection error', err.stack));
+  
     app.get("/api/product/:id", async (req, res) => {
         const { id } = req.params;
         console.log(`[LOG] Received request for product ID: ${id}`);
