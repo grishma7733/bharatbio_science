@@ -7,27 +7,29 @@ const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
-const localIP = "192.168.1.8";
+const DEPLOYED_FRONTEND_URL = "https://bharatbioscience.com"; 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/view/product', express.static(path.join(__dirname, 'public')));
 
 
 
-app.use(cors());
+app.use(cors({
+    origin: DEPLOYED_FRONTEND_URL,
+    methods: ["GET"],
+    allowedHeaders: ["Content-Type"]
+}));
+
 app.use(express.json());
 
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    next();
-});
+app.use(cors({
+    origin: process.env.FRONTEND_URL, 
+    credentials: true
+}));
+
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/index.html'));
 });
-
-
 
 app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy", 
@@ -35,10 +37,12 @@ app.use((req, res, next) => {
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
         "script-src 'self'; " +
         "img-src 'self' data: https:; " +
-        "connect-src 'self' http://localhost:4000 http://192.168.1.8:4000"
+        `connect-src 'self' ${process.env.FRONTEND_URL} ${process.env.BACKEND_URL};`
     );
     next();
 });
+
+
 
 const apiRouter = express.Router();
 
@@ -53,7 +57,10 @@ const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 }).promise();
 
 // ✅ Check if the database is connected
@@ -122,25 +129,23 @@ app.get("/api/product/:id", async (req, res) => {
 });
 
 
-    app.get("/view/product/:id", (req, res) => {
-        const filePath = path.join(__dirname, "public", "index.html");
-    
-        console.log(`[LOG] Serving product page for ID: ${req.params.id}`);
-        console.log(`[DEBUG] Looking for file at: ${filePath}`);
-    
-        res.sendFile(filePath, (err) => {
-            if (err) {
-                console.error("[ERROR] Failed to serve product.html:", err);
-                res.status(500).send(`Error loading product page: ${err.message}`);
-            }
-        });
-    });
+const FRONTEND_URL = "https://bharatbioscience.vercel.app"; // Change this to your actual Vercel frontend URL
+
+app.get("/view/product/:id", (req, res) => {
+    const productId = req.params.id;
+    const productPageUrl = `${FRONTEND_URL}/view/product/${productId}`;
+
+    console.log(`[LOG] Redirecting to: ${productPageUrl}`);
+    res.redirect(productPageUrl);
+});
+
     
 
 // ✅ Fixed QR Code Generation
 app.get('/generate-qr/:id/save', async (req, res) => {
     const { id } = req.params;
-    const qrUrl = `http://${localIP}:4000/view/product/${id}`;
+    const qrUrl = `${FRONTEND_URL}/index.html?id=${id}`; // Replace with your Vercel frontend URL
+
 
     try {
         const qrCode = await QRCode.toDataURL(qrUrl);
@@ -162,4 +167,4 @@ app.get('/generate-qr/:id/save', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port http://${localIP}:${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));

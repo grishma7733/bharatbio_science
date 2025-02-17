@@ -2,8 +2,13 @@ const API_BASE_URL = "https://bharatbioscience.com";
 document.addEventListener("DOMContentLoaded", async function () {
     try {
         // Get product ID from URL
-        const pathSegments = window.location.pathname.split('/');
-        const productId = pathSegments[pathSegments.length - 1];
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id'); // Get the product ID from ?id=1
+
+if (!productId) {
+    throw new Error("Invalid or missing product ID");
+}
+
 
         if (!productId || isNaN(productId)) {
             throw new Error("Invalid or missing product ID");
