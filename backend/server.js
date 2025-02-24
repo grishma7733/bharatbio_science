@@ -107,7 +107,7 @@ client.connect()
     });
 
     // ✅ API to fetch product data as JSON
-app.get("/api/product/:id", async (req, res) => {
+app.get("/view/product/:id", async (req, res) => {
     const { id } = req.params;
     console.log(`[LOG] Received request for product ID: ${id}`);
 
@@ -143,7 +143,7 @@ app.get("/view/product/:id", (req, res) => {
 // ✅ Fixed QR Code Generation
 app.get('/generate-qr/:id/save', async (req, res) => {
     const { id } = req.params;
-    const qrUrl = `${FRONTEND_URL}/index.html?id=${id}`; // Replace with your Vercel frontend URL
+    const qrUrl = `${FRONTEND_URL}/view/product/${id}`; // Replace with your Vercel frontend URL
 
 
     try {
