@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const app = express();
 
-const DEPLOYED_FRONTEND_URL = "https://bharatbioscience.com";
+const DEPLOYED_FRONTEND_URL = "https://bharatbio-science.vercel.app";
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/view/product', express.static(path.join(__dirname, 'public')));
 
@@ -128,7 +128,7 @@ app.get("/view/product/:id", async (req, res) => {
 });
 
 
-const FRONTEND_URL = "https://bharatbioscience.vercel.app"; // Change this to your actual Vercel frontend URL
+const FRONTEND_URL = "https://bharatbio-science.vercel.app"; // Change this to your actual Vercel frontend URL
 
 app.get("/view/product/:id", (req, res) => {
     const productId = req.params.id;
@@ -165,5 +165,5 @@ app.get('/generate-qr/:id/save', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 3998;
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));

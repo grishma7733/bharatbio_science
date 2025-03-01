@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://api.bharatbioscience.com";
+const API_BASE_URL = "https://bharatbioscience.com";
 document.addEventListener("DOMContentLoaded", async function () {
     try {
         // Get product ID from URL
