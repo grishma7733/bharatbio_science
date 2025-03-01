@@ -1,4 +1,4 @@
-const API_BASE_URL = "https://bharatbioscience.com";
+
 document.addEventListener("DOMContentLoaded", async function () {
     try {
         // Get product ID from URL
@@ -15,7 +15,7 @@ if (!productId) {
         }
 
         console.log("Fetching product:", productId);
-
+        const API_BASE_URL = "https://bharatbioscience.com";
         // Fetch product details
         const response = await fetch(`${API_BASE_URL}/api/product/${productId}`);
         if (!response.ok) {
