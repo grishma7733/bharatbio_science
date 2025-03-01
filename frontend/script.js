@@ -1,28 +1,37 @@
-
 document.addEventListener("DOMContentLoaded", async function () {
     try {
         // Get product ID from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const productId = urlParams.get('id'); // Get the product ID from ?id=1
+        const productId = urlParams.get('id'); // Extract product ID from URL
 
-if (!productId) {
-    throw new Error("Invalid or missing product ID");
-}
+        console.log("Current URL:", window.location.href);
+        console.log("Extracted Product ID:", productId);
 
-
+        // Validate product ID
         if (!productId || isNaN(productId)) {
             throw new Error("Invalid or missing product ID");
         }
 
         console.log("Fetching product:", productId);
         const API_BASE_URL = "https://bharatbioscience.com";
+        const API_URL = `${API_BASE_URL}/api/product/${productId}`;
+
+        console.log("Fetching product details from:", API_URL);
+
         // Fetch product details
-        const response = await fetch(`${API_BASE_URL}/api/product/${productId}`);
+        const response = await fetch(API_URL);
+
         if (!response.ok) {
+            console.error("API Error:", response.status, response.statusText);
             throw new Error(`Error: ${response.statusText}`);
         }
 
         const product = await response.json();
+
+        if (!product || Object.keys(product).length === 0) {
+            throw new Error("Product not found or API returned empty data");
+        }
+
         console.log("Product Data:", product);
 
         // Update HTML elements
