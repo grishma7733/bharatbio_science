@@ -8,29 +8,23 @@ require('dotenv').config();
 
 const app = express();
 
-const DEPLOYED_FRONTEND_URL = "https://bharatbio-science-ikyjfs40b-grishmas-projects-1275cf4f.vercel.app";
+const DEPLOYED_FRONTEND_URL = "https://bharatbio-science.vercel.app";
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/view/product', express.static(path.join(__dirname, 'public')));
-
-
-
-app.use(cors({
-    origin: DEPLOYED_FRONTEND_URL,
-    methods: ["GET"],
-    allowedHeaders: ["Content-Type"]
-}));
 
 app.use(express.json());
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL, 
-    credentials: true
+    origin: process.env.FRONTEND_URL||DEPLOYED_FRONTEND_URL, 
+    credentials: true,
+    methods: ["GET"],
+    allowedHeaders: ["Content-Type"]
 }));
 
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + './frontend/index.html'));
-});
+// app.get('/', (req, res) => {
+//     res.sendFile(path.join(__dirname + './frontend/index.html'));
+// });
 
 app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy", 
@@ -48,6 +42,8 @@ app.use((req, res, next) => {
 const apiRouter = express.Router();
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/qrcodes', express.static('qrcodes'));
+
 
 app.get("/", (req, res) => {
     res.send("Server is running! QR Code API is working.");
@@ -112,11 +108,12 @@ app.get("/view/product/:id", async (req, res) => {
     console.log(`[LOG] Received request for product ID: ${id}`);
 
     try {
-        const [rows] = await pool.query("SELECT * FROM product_details WHERE id = ?", [id]);
+        const result = await client.query("SELECT * FROM product_details WHERE id = $1", [id]);
+        const rows = result.rows;
 
-        if (!rows || rows.length === 0) {
-            return res.status(404).json({ error: "Product not found" });
-        }
+    if (!rows || rows.length === 0) {
+        return res.status(404).json({ error: "Product not found" });
+    }
 
         console.log("[LOG] Sending product data:", rows[0]);
         res.json(rows[0]);
@@ -128,7 +125,7 @@ app.get("/view/product/:id", async (req, res) => {
 });
 
 
-const FRONTEND_URL = "https://bharatbio-science-ikyjfs40b-grishmas-projects-1275cf4f.vercel.app"; // Change this to your actual Vercel frontend URL
+const FRONTEND_URL = "https://bharatbio-science.vercel.app"; // Change this to your actual Vercel frontend URL
 
 app.get("/view/product/:id", (req, res) => {
     const productId = req.params.id;
@@ -143,7 +140,7 @@ app.get("/view/product/:id", (req, res) => {
 // ✅ Fixed QR Code Generation
 app.get('/generate-qr/:id/save', async (req, res) => {
     const { id } = req.params;
-    const qrUrl = `${FRONTEND_URL}/view/product/${id}`; // Replace with your Vercel frontend URL
+    const qrUrl = `https://bharatbio-science.vercel.app/view/product/${id}`; // Replace with your Vercel frontend URL
 
 
     try {
