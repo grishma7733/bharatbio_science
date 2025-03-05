@@ -1,9 +1,6 @@
 document.addEventListener("DOMContentLoaded", async function () {
     try {
         // Get product ID from URL
-        // const urlParams = new URLSearchParams(window.location.search);
-        // const productId = urlParams.get('id'); // Extract product ID from URL
-        
         const pathSegments = window.location.pathname.split('/');
         const productId = pathSegments[pathSegments.length - 1];
 
