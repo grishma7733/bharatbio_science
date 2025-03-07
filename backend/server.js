@@ -73,9 +73,8 @@ client.connect()
                 return res.status(400).json({ error: "Product ID is required" });
             }
     
-            const [rows] = await pool.query(
-                "SELECT * FROM product_details WHERE id = ?", 
-                [id]
+            const [rows] = await client.query(
+                "SELECT * FROM product_details WHERE id = $1", [id], 
             );
             
             if (!rows || rows.length === 0) {
