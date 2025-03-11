@@ -10,21 +10,15 @@ const app = express();
 
 const DEPLOYED_FRONTEND_URL = "https://bharatbio-science.vercel.app";
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/view/product', express.static(path.join(__dirname, 'public')));
 
 app.use(express.json());
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL||DEPLOYED_FRONTEND_URL, 
+    origin: process.env.FRONTEND_URL || DEPLOYED_FRONTEND_URL,
     credentials: true,
-    methods: ["GET","POST"],
+    methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"]
 }));
-
-
-// app.get('/', (req, res) => {
-//     res.sendFile(path.join(__dirname + './frontend/index.html'));
-// });
 
 app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy", 
@@ -37,73 +31,58 @@ app.use((req, res, next) => {
     next();
 });
 
-
-
-const apiRouter = express.Router();
-
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/qrcodes', express.static('qrcodes'));
-
 
 app.get("/", (req, res) => {
     res.send("Server is running! QR Code API is working.");
 });
 
-// ✅ Fixed Database Connection Issue
 const client = new Client({
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-  });
+});
 
-// ✅ Check if the database is connected
 client.connect()
-  .then(() => console.log('Connected to Supabase Database'))
-  .catch(err => console.error('Connection error', err.stack));
-  
-    app.get("/api/product/:id", async (req, res) => {
-        const { id } = req.params;
-        console.log(`[LOG] Received request for product ID: ${id}`);
-        
-        try {
-            // Add proper error handling for the database query
-            if (!id) {
-                return res.status(400).json({ error: "Product ID is required" });
-            }
-    
-            const [rows] = await client.query(
-                "SELECT * FROM product_details WHERE id = $1", [id], 
-            );
-            
-            if (!rows || rows.length === 0) {
-                console.log(`[LOG] No product found with ID: ${id}`);
-                return res.status(404).json({ error: "Product not found" });
-            }
+    .then(() => console.log('Connected to Supabase Database'))
+    .catch(err => console.error('Connection error', err.stack));
 
-             // ✅ If product exists, serve `product.html`
-             res.sendFile(path.join(__dirname, "public", "index.html"));
-    
-            // Log the data being sent
-            console.log("[LOG] Sending product data:", rows[0]);
-            
-            // Enable CORS for this route
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            
-            // Send the product data
-            res.json(rows[0]);
-    
-        } catch (err) {
-            console.error("[ERROR] Database error:", err);
-            res.status(500).json({ error: "Database error" });
+app.get("/api/product/:id", async (req, res) => {
+    const { id } = req.params;
+    console.log(`[LOG] Received request for product ID: ${id}`);
+
+    try {
+        if (!id) {
+            return res.status(400).json({ error: "Product ID is required" });
         }
-    });
 
-    const FRONTEND_URL = "https://bharatbio-science.vercel.app"; // Change this to your actual Vercel frontend URL
+        const [rows] = await client.query(
+            "SELECT * FROM product_details WHERE id = $1", [id],
+        );
 
-    // ✅ API to fetch product data as JSON
+        if (!rows || rows.length === 0) {
+            console.log(`[LOG] No product found with ID: ${id}`);
+            return res.status(404).json({ error: "Product not found" });
+        }
+
+        res.sendFile(path.join(__dirname, "public", "index.html"));
+
+        console.log("[LOG] Sending product data:", rows[0]);
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error("[ERROR] Database error:", err);
+        res.status(500).json({ error: "Database error" });
+    }
+});
+
+const FRONTEND_URL = "https://bharatbio-science.vercel.app";
+
 app.get("/view/product/:id", async (req, res) => {
     const { id } = req.params;
     console.log(`[LOG] Received request for product ID: ${id}`);
@@ -117,17 +96,7 @@ app.get("/view/product/:id", async (req, res) => {
         }
 
         console.log("[LOG] Sending product data:", rows[0]);
-
-        // Check if the request is from the frontend or needs JSON data
-        if (req.headers.accept && req.headers.accept.includes('application/json')) {
-            // Send JSON data
-            res.json(rows[0]);
-        } else {
-            // Redirect to frontend URL
-            const productPageUrl = `${FRONTEND_URL}/view/product/${id}`;
-            console.log(`[LOG] Redirecting to: ${productPageUrl}`);
-            res.redirect(productPageUrl);
-        }
+        res.json(rows[0]);
 
     } catch (err) {
         console.error("[ERROR] Database error:", err);
@@ -135,23 +104,9 @@ app.get("/view/product/:id", async (req, res) => {
     }
 });
 
-
-
-
-// app.get("/view/product/:id", (req, res) => {
-//     const productId = req.params.id;
-//     const productPageUrl = `${FRONTEND_URL}/view/product/${productId}`;
-
-//     console.log(`[LOG] Redirecting to: ${productPageUrl}`);
-//     res.redirect(productPageUrl);
-// });
-
-    
-
-// ✅ Fixed QR Code Generation
 app.get('/generate-qr/:id/save', async (req, res) => {
     const { id } = req.params;
-    const qrUrl = `https://bharatbio-science.vercel.app/view/product/${id}`; // Replace with your Vercel frontend URL
+    const qrUrl = `https://bharatbio-science.vercel.app/view/product/${id}`;
 
     try {
         const qrCode = await QRCode.toDataURL(qrUrl);
@@ -171,7 +126,6 @@ app.get('/generate-qr/:id/save', async (req, res) => {
         res.status(500).json({ error: `QR Code generation failed: ${err.message}` });
     }
 });
-
 
 const PORT = process.env.PORT || 3998;
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
