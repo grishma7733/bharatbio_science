@@ -11,6 +11,10 @@ const app = express();
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://bharatbio-science.vercel.app";
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use("/api", require("./routes/apiRoutes"));
+
+
+
 app.use(express.json());
 
 app.use(cors({
@@ -107,7 +111,7 @@ app.get("/view/product/:id", async (req, res) => {
     }
 });
 
-app.get('/generate-qr/:id/save', async (req, res) => {
+app.get('/api/generate-qr/:id/save', async (req, res) => {
     const { id } = req.params;
     const qrUrl = `${FRONTEND_URL}/view/product/${id}`;
 
@@ -129,6 +133,13 @@ app.get('/generate-qr/:id/save', async (req, res) => {
         res.status(500).json({ error: `QR Code generation failed: ${err.message}` });
     }
 });
+
+app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api")) {
+        return res.status(404).json({ error: "API route not found" });
+    }
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+})
 
 const PORT = process.env.PORT || 3998;
 app.listen(PORT, '0.0.0.0', () => console.log(`Server running on port ${PORT}`));
