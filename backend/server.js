@@ -8,13 +8,13 @@ require('dotenv').config();
 
 const app = express();
 
-const DEPLOYED_FRONTEND_URL = "https://bharatbio-science.vercel.app";
+const FRONTEND_URL = process.env.FRONTEND_URL || "https://bharatbio-science.vercel.app";
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(express.json());
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL || DEPLOYED_FRONTEND_URL,
+    origin: FRONTEND_URL,
     credentials: true,
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"]
@@ -26,7 +26,7 @@ app.use((req, res, next) => {
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
         "script-src 'self'; " +
         "img-src 'self' data: https:; " +
-        `connect-src 'self' ${process.env.FRONTEND_URL} ${process.env.BACKEND_URL};`
+        `connect-src 'self' ${FRONTEND_URL} ${process.env.BACKEND_URL};`
     );
     next();
 });
@@ -59,12 +59,10 @@ app.get("/api/product/:id", async (req, res) => {
             return res.status(400).json({ error: "Product ID is required" });
         }
 
-        const [rows] = await client.query(
-            "SELECT * FROM product_details WHERE id = $1", [id],
-        );
+        const result = await client.query("SELECT * FROM product_details WHERE id = $1", [id]);
+        const rows = result.rows;
 
         if (!rows || rows.length === 0) {
-            console.log(`[LOG] No product found with ID: ${id}`);
             return res.status(404).json({ error: "Product not found" });
         }
 
@@ -81,8 +79,6 @@ app.get("/api/product/:id", async (req, res) => {
     }
 });
 
-const FRONTEND_URL = "https://bharatbio-science.vercel.app";
-
 app.get("/view/product/:id", async (req, res) => {
     const { id } = req.params;
     console.log(`[LOG] Received request for product ID: ${id}`);
@@ -96,7 +92,14 @@ app.get("/view/product/:id", async (req, res) => {
         }
 
         console.log("[LOG] Sending product data:", rows[0]);
-        res.json(rows[0]);
+
+        if (req.headers.accept && req.headers.accept.includes('application/json')) {
+            res.json(rows[0]);
+        } else {
+            const productPageUrl = `${FRONTEND_URL}/view/product/${id}`;
+            console.log(`[LOG] Redirecting to: ${productPageUrl}`);
+            res.redirect(productPageUrl);
+        }
 
     } catch (err) {
         console.error("[ERROR] Database error:", err);
@@ -106,7 +109,7 @@ app.get("/view/product/:id", async (req, res) => {
 
 app.get('/generate-qr/:id/save', async (req, res) => {
     const { id } = req.params;
-    const qrUrl = `https://bharatbio-science.vercel.app/view/product/${id}`;
+    const qrUrl = `${FRONTEND_URL}/view/product/${id}`;
 
     try {
         const qrCode = await QRCode.toDataURL(qrUrl);

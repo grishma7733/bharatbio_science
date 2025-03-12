@@ -19,11 +19,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         console.log("Fetching product details from:", API_URL);
 
         // Fetch product details
-        const response = await fetch(API_URL,{
-            headers:{
-                "Accept":"application/json"
-            }
-        });
+        const response = await fetch(API_URL);
 
         if (!response.ok) {
             console.error("API Error:", response.status, response.statusText);
