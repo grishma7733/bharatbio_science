@@ -11,7 +11,8 @@ const app = express();
 const FRONTEND_URL = process.env.FRONTEND_URL || "https://bharatbio-science.vercel.app";
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use("/api", require("./routes/apiRoutes"));
+const apiRoutes = require("./routes/apiRoutes"); // Ensure this matches the correct file path
+app.use("/api", apiRoutes);
 
 
 
