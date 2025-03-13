@@ -56,85 +56,88 @@ client.connect()
     .then(() => console.log('Connected to Supabase Database'))
     .catch(err => console.error('Connection error', err.stack));
 
-app.get("/api/product/:id", async (req, res) => {
-    const { id } = req.params;
-    console.log(`[LOG] Received request for product ID: ${id}`);
-
-    try {
-        if (!id) {
-            return res.status(400).json({ error: "Product ID is required" });
+    app.get("/api/product/:id", async (req, res) => {
+        const { id } = req.params;
+        console.log(`[LOG] Received request for product ID: ${id}`);
+    
+        try {
+            const result = await client.query("SELECT * FROM product_details WHERE id = $1", [id]);
+            const rows = result.rows;
+    
+            if (!rows || rows.length === 0) {
+                return res.status(404).json({ error: "Product not found" });
+            }
+    
+            const product = rows[0];
+            const response = {
+                product_name: product.name,
+                product_image_url: product.image_url,
+                batch_no: product.batch_no,
+                manufacturing_date: product.manufacturing_date,
+                expiration_date: product.expiration_date,
+                mrp: product.mrp,
+                registration_no: product.registration_no,
+                manufacturer: product.manufacturer,
+                marketed_by: product.marketed_by,
+                antidote_statement: product.antidote_statement,
+                email: product.email,
+                phone_no: product.phone_no,
+                address: product.address,
+                leaflet_link: product.leaflet_link,
+                label_link: product.label_link
+            };
+    
+            console.log("[LOG] Sending product data:", response);
+            res.json(response);
+    
+        } catch (err) {
+            console.error("[ERROR] Database error:", err);
+            res.status(500).json({ error: "Database error" });
         }
-
-        const result = await client.query("SELECT * FROM product_details WHERE id = $1", [id]);
-        const rows = result.rows;
-
-        if (!rows || rows.length === 0) {
-            return res.status(404).json({ error: "Product not found" });
+    });
+    app.get("/view/product/:id", async (req, res) => {
+        const { id } = req.params;
+        console.log(`[LOG] Received request for product ID: ${id}`);
+    
+        try {
+            const result = await client.query("SELECT * FROM product_details WHERE id = $1", [id]);
+            const rows = result.rows;
+    
+            if (!rows || rows.length === 0) {
+                return res.status(404).json({ error: "Product not found" });
+            }
+    
+            console.log("[LOG] Redirecting to frontend for product ID:", id);
+            res.redirect(`${FRONTEND_URL}/view/product/${id}`);
+    
+        } catch (err) {
+            console.error("[ERROR] Database error:", err);
+            res.status(500).json({ error: "Database error" });
         }
+    });
 
-        res.sendFile(path.join(__dirname, "public", "index.html"));
-
-        console.log("[LOG] Sending product data:", rows[0]);
-        res.header("Access-Control-Allow-Origin", "*");
-        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        res.json(rows[0]);
-
-    } catch (err) {
-        console.error("[ERROR] Database error:", err);
-        res.status(500).json({ error: "Database error" });
-    }
-});
-
-app.get("/view/product/:id", async (req, res) => {
-    const { id } = req.params;
-    console.log(`[LOG] Received request for product ID: ${id}`);
-
-    try {
-        const result = await client.query("SELECT * FROM product_details WHERE id = $1", [id]);
-        const rows = result.rows;
-
-        if (!rows || rows.length === 0) {
-            return res.status(404).json({ error: "Product not found" });
+    app.get('/api/generate-qr/:id/save', async (req, res) => {
+        const { id } = req.params;
+        const qrUrl = `${FRONTEND_URL}/view/product/${id}`;
+    
+        try {
+            const qrCode = await QRCode.toDataURL(qrUrl);
+            const qrCodesDir = path.join(__dirname, 'qrcodes');
+    
+            if (!fs.existsSync(qrCodesDir)) fs.mkdirSync(qrCodesDir, { recursive: true });
+    
+            const filePath = path.join(qrCodesDir, `qrcode_${id}.png`);
+            const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
+            fs.writeFileSync(filePath, base64Data, 'base64');
+    
+            console.log("[LOG] QR Code saved at:", filePath);
+            res.json({ message: "QR Code saved!", file: `/qrcodes/qrcode_${id}.png` });
+    
+        } catch (err) {
+            console.error("[ERROR] QR Code Generation Failed:", err.message);
+            res.status(500).json({ error: `QR Code generation failed: ${err.message}` });
         }
-
-        console.log("[LOG] Sending product data:", rows[0]);
-
-        if (req.headers.accept && req.headers.accept.includes('application/json')) {
-            res.json(rows[0]);
-        } else {
-            const productPageUrl = `${FRONTEND_URL}/view/product/${id}`;
-            console.log(`[LOG] Redirecting to: ${productPageUrl}`);
-            res.redirect(productPageUrl);
-        }
-
-    } catch (err) {
-        console.error("[ERROR] Database error:", err);
-        res.status(500).json({ error: "Database error" });
-    }
-});
-
-app.get('/api/generate-qr/:id/save', async (req, res) => {
-    const { id } = req.params;
-    const qrUrl = `${FRONTEND_URL}/api/product/${id}`;
-
-    try {
-        const qrCode = await QRCode.toDataURL(qrUrl);
-        const qrCodesDir = path.join(__dirname, 'qrcodes');
-
-        if (!fs.existsSync(qrCodesDir)) fs.mkdirSync(qrCodesDir, { recursive: true });
-
-        const filePath = path.join(qrCodesDir, `qrcode_${id}.png`);
-        const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
-        fs.writeFileSync(filePath, base64Data, 'base64');
-
-        console.log("[LOG] QR Code saved at:", filePath);
-        res.json({ message: "QR Code saved!", file: `/qrcodes/qrcode_${id}.png` });
-
-    } catch (err) {
-        console.error("[ERROR] QR Code Generation Failed:", err.message);
-        res.status(500).json({ error: `QR Code generation failed: ${err.message}` });
-    }
-});
+    });
 
 app.get("*", (req, res, next) => {
     if (req.path.startsWith("/api")) {

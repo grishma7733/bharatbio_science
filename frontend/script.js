@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         console.log("Fetching product:", productId);
         const API_BASE_URL = "https://bharatbioscience.com";
-        const API_URL = `${API_BASE_URL}/api/product/${productId}`;
+        const API_URL = `${API_BASE_URL}/api/product/${productId}`; // Updated to use /api/product/:id
 
         console.log("Fetching product details from:", API_URL);
 
