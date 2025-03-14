@@ -56,12 +56,12 @@ client.connect()
     .then(() => console.log('Connected to Supabase Database'))
     .catch(err => console.error('Connection error', err.stack));
 
-    app.get("/api/product/:id", async (req, res) => {
-        const { id } = req.params;
-        console.log(`[LOG] Received request for product ID: ${id}`);
+    app.get("/api/product/:productName", async (req, res) => {
+        const { productName } = req.params;
+        console.log(`[LOG] Received request for product name: ${productName}`);
     
         try {
-            const result = await client.query("SELECT * FROM product_details WHERE id = $1", [id]);
+            const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [productName]);
             const rows = result.rows;
     
             if (!rows || rows.length === 0) {
@@ -95,30 +95,29 @@ client.connect()
             res.status(500).json({ error: "Database error" });
         }
     });
-    app.get("/view/product/:id", async (req, res) => {
-        const { id } = req.params;
-        console.log(`[LOG] Received request for product ID: ${id}`);
+    app.get("/view/product/:productName", async (req, res) => {
+        const { productName } = req.params;
+        console.log(`[LOG] Received request for product name: ${productName}`);
     
         try {
-            const result = await client.query("SELECT * FROM product_details WHERE id = $1", [id]);
+            const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [productName]);
             const rows = result.rows;
     
             if (!rows || rows.length === 0) {
                 return res.status(404).json({ error: "Product not found" });
             }
     
-            console.log("[LOG] Redirecting to frontend for product ID:", id);
-            res.redirect(`${FRONTEND_URL}/view/product/${id}`);
+            console.log("[LOG] Redirecting to frontend for product name:", productName);
+            res.redirect(`${FRONTEND_URL}/view/product/${encodeURIComponent(productName)}`);
     
         } catch (err) {
             console.error("[ERROR] Database error:", err);
             res.status(500).json({ error: "Database error" });
         }
     });
-
-    app.get('/api/generate-qr/:id/save', async (req, res) => {
+    app.get('/api/generate-qr/:productName/save', async (req, res) => {
         const { id } = req.params;
-        const qrUrl = `${FRONTEND_URL}/view/product/${id}`;
+        const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(productName)}`; // Encode product name for URL
     
         try {
             const qrCode = await QRCode.toDataURL(qrUrl);

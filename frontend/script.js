@@ -2,19 +2,19 @@ document.addEventListener("DOMContentLoaded", async function () {
     try {
         // Get product ID from URL
         const pathSegments = window.location.pathname.split('/');
-        const productId = pathSegments[pathSegments.length - 1];
+        const productName = decodeURIComponent(pathSegments[pathSegments.length - 1]); // Decode URL-encoded product name
 
         console.log("Current URL:", window.location.href);
         console.log("Extracted Product ID:", productId);
 
         // Validate product ID
-        if (!productId || isNaN(productId)) {
+        if (!productName || isNaN(productName)) {
             throw new Error("Invalid or missing product ID");
         }
 
         console.log("Fetching product:", productId);
         const API_BASE_URL = "https://bharatbioscience.com";
-        const API_URL = `${API_BASE_URL}/api/product/${productId}`; // Updated to use /api/product/:id
+        const API_URL = `${API_BASE_URL}/api/product/${productName}`;
 
         console.log("Fetching product details from:", API_URL);
 
