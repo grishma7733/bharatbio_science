@@ -58,13 +58,15 @@ client.connect()
 
     app.get("/api/product/:productName", async (req, res) => {
         const { productName } = req.params;
-        console.log(`[LOG] Received request for product name: ${productName}`);
+        const decodedName = decodeURIComponent(productName);
+        console.log(`[LOG] Received request for product name: ${decodedName}`);
     
         try {
-            const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [productName]);
+            const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [decodedName]);
             const rows = result.rows;
     
             if (!rows || rows.length === 0) {
+                console.log("[LOG] Product not found in database.");
                 return res.status(404).json({ error: "Product not found" });
             }
     
@@ -117,7 +119,7 @@ client.connect()
     });
     app.get('/api/generate-qr/:productName/save', async (req, res) => {
         const { productName } = req.params;
-        const qrUrl = `${FRONTEND_URL}/view/product/${productName}`;
+        const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(productName)}`;
     
         try {
             const qrCode = await QRCode.toDataURL(qrUrl);
