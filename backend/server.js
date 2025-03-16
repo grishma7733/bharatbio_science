@@ -116,7 +116,7 @@ client.connect()
         }
     });
     app.get('/api/generate-qr/:productName/save', async (req, res) => {
-        const { id } = req.params;
+        const { productName } = req.params;
         const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(productName)}`; // Encode product name for URL
     
         try {
