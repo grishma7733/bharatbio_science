@@ -99,31 +99,36 @@ client.connect()
     });
     app.get("/view/product/:productName", async (req, res) => {
         const { productName } = req.params;
-        console.log(`[LOG] Received request for product name: ${productName}`);
+        const decodedName = decodeURIComponent(productName);
+    
+        console.log(`[LOG] Raw productName: ${productName}`);
+        console.log(`[LOG] Decoded productName: ${decodedName}`);
     
         try {
-            const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [productName]);
+            const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [decodedName]);
             const rows = result.rows;
     
             if (!rows || rows.length === 0) {
+                console.log(`[LOG] Product '${decodedName}' not found in database.`);
                 return res.status(404).json({ error: "Product not found" });
             }
     
-            console.log("[LOG] Redirecting to frontend for product name:", productName);
-            res.redirect(`${FRONTEND_URL}/view/product/${encodeURIComponent(productName)}`);
+            console.log("[LOG] Redirecting to frontend for product:", decodedName);
+            res.redirect(`${FRONTEND_URL}/view/product/${encodeURIComponent(decodedName)}`);
     
         } catch (err) {
             console.error("[ERROR] Database error:", err);
             res.status(500).json({ error: "Database error" });
         }
     });
+    
     app.get('/api/generate-qr/:productName/save', async (req, res) => {
         let { productName } = req.params;
         
         // ✅ Remove invalid characters (like `:`) and replace spaces with `_`
-        const safeProductName = productName.replace(/[:]/g, '').replace(/\s+/g, '_');
-        
-        const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(productName)}`;
+        const sanitizedProductName = productName.replace(/^:/, ""); // Remove leading colon if present
+        const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(sanitizedProductName)}`;
+
     
         try {
             const qrCode = await QRCode.toDataURL(qrUrl);
