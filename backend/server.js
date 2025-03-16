@@ -118,7 +118,11 @@ client.connect()
         }
     });
     app.get('/api/generate-qr/:productName/save', async (req, res) => {
-        const { productName } = req.params;
+        let { productName } = req.params;
+        
+        // ✅ Remove invalid characters (like `:`) and replace spaces with `_`
+        const safeProductName = productName.replace(/[:]/g, '').replace(/\s+/g, '_');
+        
         const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(productName)}`;
     
         try {
@@ -127,12 +131,12 @@ client.connect()
     
             if (!fs.existsSync(qrCodesDir)) fs.mkdirSync(qrCodesDir, { recursive: true });
     
-            const filePath = path.join(qrCodesDir, `qrcode_${productName}.png`);
+            const filePath = path.join(qrCodesDir, `qrcode_${safeProductName}.png`);
             const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
             fs.writeFileSync(filePath, base64Data, 'base64');
     
             console.log("[LOG] QR Code saved at:", filePath);
-            res.json({ message: "QR Code saved!", file: `/qrcodes/qrcode_${productName}.png` });
+            res.json({ message: "QR Code saved!", file: `/qrcodes/qrcode_${safeProductName}.png` });
     
         } catch (err) {
             console.error("[ERROR] QR Code Generation Failed:", err.message);
