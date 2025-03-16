@@ -125,12 +125,12 @@ client.connect()
     
             if (!fs.existsSync(qrCodesDir)) fs.mkdirSync(qrCodesDir, { recursive: true });
     
-            const filePath = path.join(qrCodesDir, `qrcode_${id}.png`);
+            const filePath = path.join(qrCodesDir, `qrcode_${productName}.png`);
             const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
             fs.writeFileSync(filePath, base64Data, 'base64');
     
             console.log("[LOG] QR Code saved at:", filePath);
-            res.json({ message: "QR Code saved!", file: `/qrcodes/qrcode_${id}.png` });
+            res.json({ message: "QR Code saved!", file: `/qrcodes/qrcode_${productName}.png` });
     
         } catch (err) {
             console.error("[ERROR] QR Code Generation Failed:", err.message);
