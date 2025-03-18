@@ -126,9 +126,8 @@ client.connect()
         let { productName } = req.params;
         
         // ✅ Remove invalid characters (like `:`) and replace spaces with `_`
-        const sanitizedProductName = productName.replace(/^:/, ""); // Remove leading colon if present
-        const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(sanitizedProductName)}`;
-
+        const safeProductName = productName.replace(/^:/, ""); // Remove leading colon if present
+        const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(safeProductName)}`;
     
         try {
             const qrCode = await QRCode.toDataURL(qrUrl);
@@ -136,12 +135,12 @@ client.connect()
     
             if (!fs.existsSync(qrCodesDir)) fs.mkdirSync(qrCodesDir, { recursive: true });
     
-            const filePath = path.join(qrCodesDir, `qrcode_${sanitizedProductName}.png`);
+            const filePath = path.join(qrCodesDir, `qrcode_${safeProductName}.png`);
             const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
             fs.writeFileSync(filePath, base64Data, 'base64');
     
             console.log("[LOG] QR Code saved at:", filePath);
-            res.json({ message: "QR Code saved!", file: `/qrcodes/qrcode_${sanitizedProductName}.png` });
+            res.json({ message: "QR Code saved!", file: `/qrcodes/qrcode_${safeProductName}.png` });
     
         } catch (err) {
             console.error("[ERROR] QR Code Generation Failed:", err.message);
