@@ -1,49 +1,47 @@
 document.addEventListener("DOMContentLoaded", async function () {
     try {
-        // Get product ID from URL
+        // Get product name from URL
         const pathSegments = window.location.pathname.split('/');
-        const productName = decodeURIComponent(pathSegments[pathSegments.length - 1]); // Decode URL-encoded product name
-
+        const productName = decodeURIComponent(pathSegments[pathSegments.length - 1]).trim(); // Decode & trim
+        
         console.log("Current URL:", window.location.href);
-        console.log("Extracted Product ID:", productId);
+        console.log("Extracted Product Name:", productName);
 
-        // Validate product ID
-        if (!productName || isNaN(productName)) {
-            throw new Error("Invalid or missing product ID");
+        // Validate product name
+        if (!productName) {
+            throw new Error("Invalid or missing product name");
         }
 
-        console.log("Fetching product:", productId);
         const API_BASE_URL = "https://bharatbioscience.com";
-        const API_URL = `${API_BASE_URL}/api/product/${productName}`;
+        const API_URL = `${API_BASE_URL}/api/products/${productName}`; // Ensure correct API route
 
         console.log("Fetching product details from:", API_URL);
 
         // Fetch product details
         const response = await fetch(API_URL);
-
         if (!response.ok) {
             console.error("API Error:", response.status, response.statusText);
             throw new Error(`Error: ${response.statusText}`);
         }
 
         const product = await response.json();
-
+        
         if (!product || Object.keys(product).length === 0) {
             throw new Error("Product not found or API returned empty data");
         }
 
         console.log("Product Data:", product);
 
-        // Update HTML elements
-        document.getElementById("product-name").textContent = product.product_name;
-        document.getElementById("product-image").src = product.product_image_url;
-        document.getElementById("batch-no").textContent = product.batch_no;
-        document.getElementById("manufacturing-date").textContent = product.manufacturing_date;
-        document.getElementById("expiration-date").textContent = product.expiration_date;
-        document.getElementById("mrp").textContent = product.mrp;
-        document.getElementById("registration-no").textContent = product.registration_no;
-        document.getElementById("manufacturer").textContent = product.manufacturer;
-        document.getElementById("marketed-by").textContent = product.marketed_by;
+        // Update HTML elements safely
+        document.getElementById("product-name").textContent = product.product_name || "N/A";
+        document.getElementById("product-image").src = product.product_image_url || "default.jpg";
+        document.getElementById("batch-no").textContent = product.batch_no || "N/A";
+        document.getElementById("manufacturing-date").textContent = product.manufacturing_date || "N/A";
+        document.getElementById("expiration-date").textContent = product.expiration_date || "N/A";
+        document.getElementById("mrp").textContent = product.mrp || "N/A";
+        document.getElementById("registration-no").textContent = product.registration_no || "N/A";
+        document.getElementById("manufacturer").textContent = product.manufacturer || "N/A";
+        document.getElementById("marketed-by").textContent = product.marketed_by || "N/A";
         document.getElementById("antidote-statement").textContent = product.antidote_statement || "N/A";
         document.getElementById("email").textContent = product.email || "N/A";
         document.getElementById("phone").textContent = product.phone_no || "N/A";
