@@ -72,7 +72,7 @@ client.connect()
         console.log(`[LOG] Received request for product name: ${decodedName}`);
     
         try {
-            const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [decodedName]);
+            const result = await client.query("SELECT * FROM product_details WHERE LOWER(TRIM(product_name)) = LOWER(TRIM($1))", [decodedName]);
             console.log("Decoded product name:", decodedName);
             console.log("Query result:", result.rows);
             const rows = result.rows;
