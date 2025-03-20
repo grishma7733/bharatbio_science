@@ -32,7 +32,8 @@ app.use((req, res, next) => {
          style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
          script-src 'self';
          img-src 'self' data: https:;
-         connect-src 'self' ${FRONTEND_URL} ${process.env.BACKEND_URL};`
+         connect-src 'self' ${process.env.FRONTEND_URL || 'https://bharatbio-science.vercel.app'} 
+         ${process.env.BACKEND_URL || 'https://bharatbioscience.com'};`
     );
     next();
 });
