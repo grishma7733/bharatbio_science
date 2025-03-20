@@ -30,18 +30,17 @@ app.use((req, res, next) => {
     const frontendUrl = process.env.FRONTEND_URL || 'https://bharatbio-science.vercel.app';
     const backendUrl = process.env.BACKEND_URL || 'https://bharatbioscience.com';
 
-    const cspHeader = `default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; 
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-        script-src 'self'; 
-        img-src 'self' data: https:;
-        connect-src 'self' ${frontendUrl} ${backendUrl}`;
+    const cspHeader = "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; " +
+                      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
+                      "script-src 'self'; " +
+                      "img-src 'self' data: https:; " +
+                      `connect-src 'self' ${frontendUrl} ${backendUrl}`;
 
     console.log("CSP Header:", cspHeader); // Debugging step
 
     res.setHeader("Content-Security-Policy", cspHeader);
     next();
 });
-
 
 app.use('/images', express.static(path.join(__dirname, 'images')));
 app.use('/qrcodes', express.static('qrcodes'));
