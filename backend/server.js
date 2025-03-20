@@ -99,7 +99,7 @@ client.connect()
     });
     app.get("/view/product/:productName", async (req, res) => {
         const { productName } = req.params;
-        const decodedName = decodeURIComponent(productName).replace(/_/g, " ").trim();
+        const decodedName = decodeURIComponent(productName).trim();
     
         console.log(`[LOG] Raw productName: ${productName}`);
         console.log(`[LOG] Decoded productName: ${decodedName}`);
