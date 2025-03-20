@@ -58,7 +58,7 @@ client.connect()
 
     app.get("/api/product/:productName", async (req, res) => {
         const { productName } = req.params;
-        const decodedName = decodeURIComponent(productName);
+        const decodedName = decodeURIComponent(productName).trim();
         console.log(`[LOG] Received request for product name: ${decodedName}`);
     
         try {
@@ -126,7 +126,7 @@ client.connect()
         let { productName } = req.params;
         
         // ✅ Remove invalid characters (like `:`) and replace spaces with `_`
-        const safeProductName = productName.replace(/^:/, ""); // Remove leading colon if present
+        const safeProductName = decodeURIComponent(productName).trim().replace(/\s+/g, "_"); // Remove leading colon if present
         const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(safeProductName)}`;
     
         try {
