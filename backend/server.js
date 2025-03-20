@@ -99,7 +99,7 @@ client.connect()
     });
     app.get("/view/product/:productName", async (req, res) => {
         const { productName } = req.params;
-        const decodedName = decodeURIComponent(productName).trim();
+        const decodedName = decodeURIComponent(productName).trim().replace(/^:/, '');
     
         console.log(`[LOG] Raw productName: ${productName}`);
         console.log(`[LOG] Decoded productName: ${decodedName}`);
@@ -127,7 +127,7 @@ client.connect()
         let { productName } = req.params;
         
         // ✅ Remove invalid characters (like `:`) and replace spaces with `_`
-        const safeProductName = decodeURIComponent(productName.trim().replace(/\s+/g, "_"));
+        const safeProductName = decodeURIComponent(productName.trim().replace(/\s+/g, "_").replace(/^:/, ''));
         const qrUrl = `${FRONTEND_URL}/view/product/${safeProductName}`; // Keep spaces
 
     
