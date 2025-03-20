@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", async function () {
     try {
         // Get product name from URL
-        const pathSegments = window.location.pathname.split('/');
-        const productName = decodeURIComponent(pathSegments[pathSegments.length - 1]).trim(); // Decode & trim
-        
+        const productName = decodeURIComponent(window.location.pathname.split("/").pop());
         console.log("Current URL:", window.location.href);
         console.log("Extracted Product Name:", productName);
 

@@ -58,7 +58,7 @@ client.connect()
 
     app.get("/api/product/:productName", async (req, res) => {
         const { productName } = req.params;
-        const decodedName = decodeURIComponent(productName).trim();
+        const decodedName = decodeURIComponent(productName).replace(/_/g, " ").trim();
         console.log(`[LOG] Received request for product name: ${decodedName}`);
     
         try {
@@ -99,7 +99,7 @@ client.connect()
     });
     app.get("/view/product/:productName", async (req, res) => {
         const { productName } = req.params;
-        const decodedName = decodeURIComponent(productName);
+        const decodedName = decodeURIComponent(productName).replace(/_/g, " ");
     
         console.log(`[LOG] Raw productName: ${productName}`);
         console.log(`[LOG] Decoded productName: ${decodedName}`);
@@ -114,7 +114,8 @@ client.connect()
             }
     
             console.log("[LOG] Redirecting to frontend for product:", decodedName);
-            res.redirect(`${FRONTEND_URL}/view/product/${encodeURIComponent(decodedName)}`);
+            res.redirect(`${FRONTEND_URL}/view/product/${decodedName}`);
+
     
         } catch (err) {
             console.error("[ERROR] Database error:", err);
@@ -126,8 +127,9 @@ client.connect()
         let { productName } = req.params;
         
         // ✅ Remove invalid characters (like `:`) and replace spaces with `_`
-        const safeProductName = decodeURIComponent(productName).trim().replace(/\s+/g, "_"); // Remove leading colon if present
-        const qrUrl = `${FRONTEND_URL}/view/product/${encodeURIComponent(safeProductName)}`;
+        const safeProductName = decodeURIComponent(productName).trim().replace(/^:/, '');
+        const qrUrl = `${FRONTEND_URL}/view/product/${safeProductName}`; // Keep spaces
+
     
         try {
             const qrCode = await QRCode.toDataURL(qrUrl);
