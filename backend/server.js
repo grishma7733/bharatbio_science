@@ -127,7 +127,7 @@ client.connect()
         let { productName } = req.params;
         
         // ✅ Remove invalid characters (like `:`) and replace spaces with `_`
-        const safeProductName = decodeURIComponent(productName.trim());
+        const safeProductName = decodeURIComponent(productName.trim().replace(/\s+/g, "_"));
         const qrUrl = `${FRONTEND_URL}/view/product/${safeProductName}`; // Keep spaces
 
     
