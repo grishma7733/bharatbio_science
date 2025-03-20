@@ -99,7 +99,7 @@ client.connect()
     });
     app.get("/view/product/:productName", async (req, res) => {
         const { productName } = req.params;
-        const decodedName = decodeURIComponent(productName).replace(/_/g, " ");
+        const decodedName = decodeURIComponent(productName).replace(/_/g, " ").trim();
     
         console.log(`[LOG] Raw productName: ${productName}`);
         console.log(`[LOG] Decoded productName: ${decodedName}`);
@@ -114,7 +114,7 @@ client.connect()
             }
     
             console.log("[LOG] Redirecting to frontend for product:", decodedName);
-            res.redirect(`${FRONTEND_URL}/view/product/${decodedName}`);
+            res.redirect(`${FRONTEND_URL}/view/product/${encodeURIComponenet(decodedName)}`);
 
     
         } catch (err) {
@@ -127,7 +127,7 @@ client.connect()
         let { productName } = req.params;
         
         // ✅ Remove invalid characters (like `:`) and replace spaces with `_`
-        const safeProductName = decodeURIComponent(productName).trim().replace(/^:/, '');
+        const safeProductName = decodeURIComponent(productName.trim());
         const qrUrl = `${FRONTEND_URL}/view/product/${safeProductName}`; // Keep spaces
 
     
