@@ -100,7 +100,7 @@ client.connect()
                 leaflet_link: product.leaflet_link,
                 label_link: product.label_link
             };
-    
+            
             console.log("[LOG] Sending product data:", response);
             res.json(response);
     
@@ -117,7 +117,7 @@ client.connect()
         console.log(`[LOG] Decoded productName: ${decodedName}`);
     
         try {
-            const result = await client.query("SELECT * FROM product_details WHERE LOWER(product_name) = LOWER($1)", [decodedName]);
+            const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [decodedName]);
             const rows = result.rows;
     
             if (!rows || rows.length === 0) {
