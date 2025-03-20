@@ -44,18 +44,18 @@ app.get("/", (req, res) => {
     res.send("Server is running! QR Code API is working.");
 });
 
-// const client = new Client({
-//     host: process.env.DB_HOST,
-//     port: process.env.DB_PORT,
-//     user: process.env.DB_USER,
-//     password: process.env.DB_PASS,
-//     database: process.env.DB_NAME,
-// });
-
 const client = new Client({
-    connectionString: process.env.DB_URL,
-    ssl: { rejectUnauthorized: false } // Required for Supabase
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
 });
+
+// const client = new Client({
+//     connectionString: process.env.DB_URL,
+//     ssl: { rejectUnauthorized: false } // Required for Supabase
+// });
 
 client.connect()
     .then(() => console.log('Connected to Supabase Database'))
