@@ -105,7 +105,7 @@ client.connect()
         console.log(`[LOG] Decoded productName: ${decodedName}`);
     
         try {
-            const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [decodedName]);
+            const result = await client.query("SELECT * FROM product_details WHERE LOWER(product_name) = LOWER($1)", [decodedName]);
             const rows = result.rows;
     
             if (!rows || rows.length === 0) {
@@ -140,7 +140,8 @@ client.connect()
             fs.writeFileSync(filePath, base64Data, 'base64');
     
             console.log("[LOG] QR Code saved at:", filePath);
-            res.json({ message: "QR Code saved!", file: `/qrcodes/qrcode_${safeProductName}.png` });
+            const fileUrl = `${process.env.BACKEND_URL}/qrcodes/qrcode_${safeProductName}.png`;
+            res.json({ message: "QR Code saved!", file: fileUrl });
     
         } catch (err) {
             console.error("[ERROR] QR Code Generation Failed:", err.message);
