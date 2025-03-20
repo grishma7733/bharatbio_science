@@ -28,11 +28,11 @@ app.use(cors({
 
 app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy", 
-        "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; " +
-        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +
-        "script-src 'self'; " +
-        "img-src 'self' data: https:; " +
-        `connect-src 'self' ${FRONTEND_URL} ${process.env.BACKEND_URL};`
+        `default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; 
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
+        script-src 'self'; 
+        img-src 'self' data: https:; 
+        connect-src 'self' ${FRONTEND_URL} ${process.env.BACKEND_URL};`
     );
     next();
 });
@@ -44,12 +44,17 @@ app.get("/", (req, res) => {
     res.send("Server is running! QR Code API is working.");
 });
 
+// const client = new Client({
+//     host: process.env.DB_HOST,
+//     port: process.env.DB_PORT,
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASS,
+//     database: process.env.DB_NAME,
+// });
+
 const client = new Client({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
+    connectionString: process.env.DB_URL,
+    ssl: { rejectUnauthorized: false } // Required for Supabase
 });
 
 client.connect()
@@ -74,8 +79,8 @@ client.connect()
     
             const product = rows[0];
             const response = {
-                product_name: product.name,
-                product_image_url: product.image_url,
+                product_name: product.product_name,
+                product_image_url: product.product_image_url,
                 batch_no: product.batch_no,
                 manufacturing_date: product.manufacturing_date,
                 expiration_date: product.expiration_date,
@@ -116,7 +121,7 @@ client.connect()
             }
     
             console.log("[LOG] Redirecting to frontend for product:", decodedName);
-            res.redirect(`${FRONTEND_URL}/view/product/${encodeURIComponenet(decodedName)}`);
+            res.redirect(`${FRONTEND_URL}/view/product/${encodeURIComponent(decodedName)}`);
 
     
         } catch (err) {
