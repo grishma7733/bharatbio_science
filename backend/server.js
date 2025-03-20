@@ -63,6 +63,8 @@ client.connect()
     
         try {
             const result = await client.query("SELECT * FROM product_details WHERE product_name = $1", [decodedName]);
+            console.log("Decoded product name:", decodedName);
+            console.log("Query result:", result.rows);
             const rows = result.rows;
     
             if (!rows || rows.length === 0) {
