@@ -9,12 +9,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (!productName) {
             throw new Error("Invalid or missing product name");
         }
+        else{
+            const API_BASE_URL = "https://bharatbioscience.com";
+            const API_URL = `${API_BASE_URL}/api/product/${encodeURIComponent(productName)}`;
 
-        const API_BASE_URL = "https://bharatbioscience.com";
-        const API_URL = `${API_BASE_URL}/api/product/${encodeURIComponent(productName)}`;
+            console.log("Fetching product details from:", API_URL);
 
-        console.log("Fetching product details from:", API_URL);
+        }
 
+        
         const response = await fetch(API_URL);
         if (!response.ok) {
             throw new Error(`API Error: ${response.statusText}`);
