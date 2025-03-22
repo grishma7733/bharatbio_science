@@ -158,7 +158,7 @@ client.connect()
         
         // ✅ Remove invalid characters (like `:`) and replace spaces with `_`
         const safeProductName = decodeURIComponent(productName.trim().replace(/\s+/g, "_").replace(/^:/, ''));
-        const qrUrl = `${FRONTEND_URL}/view/product/${safeProductName}`; // Keep spaces
+        const qrUrl = `https://bharatbio-science.vercel.app/?name=${encodeURIComponent(safeProductName)}`;
 
     
         try {
