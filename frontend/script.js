@@ -1,36 +1,32 @@
 document.addEventListener("DOMContentLoaded", async function () {
     try {
-        // Get product name from URL
-        const productName = decodeURIComponent(window.location.pathname.split("/").pop());
-        console.log("Current URL:", window.location.href);
+        // Extract product name from URL query string
+        const urlParams = new URLSearchParams(window.location.search);
+        const productName = urlParams.get("name"); // Get value of "name" param
+
         console.log("Extracted Product Name:", productName);
 
-        // Validate product name
         if (!productName) {
             throw new Error("Invalid or missing product name");
         }
 
         const API_BASE_URL = "https://bharatbioscience.com";
-        const API_URL = `${API_BASE_URL}/api/product/${productName}`; // Ensure correct API route
+        const API_URL = `${API_BASE_URL}/api/product/${encodeURIComponent(productName)}`;
 
         console.log("Fetching product details from:", API_URL);
 
-        // Fetch product details
         const response = await fetch(API_URL);
         if (!response.ok) {
-            console.error("API Error:", response.status, response.statusText);
-            throw new Error(`Error: ${response.statusText}`);
+            throw new Error(`API Error: ${response.statusText}`);
         }
 
         const product = await response.json();
-        
+
         if (!product || Object.keys(product).length === 0) {
-            throw new Error("Product not found or API returned empty data");
+            throw new Error("Product not found");
         }
 
-        console.log("Product Data:", product);
-
-        // Update HTML elements safely
+        // Update HTML with product details
         document.getElementById("product-name").textContent = product.product_name || "N/A";
         document.getElementById("product-image").src = product.product_image_url || "default.jpg";
         document.getElementById("batch-no").textContent = product.batch_no || "N/A";
