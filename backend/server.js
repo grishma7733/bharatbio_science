@@ -134,6 +134,18 @@ client.connect()
             res.status(500).json({ error: "Database error" });
         }
     });
+
+    app.get("/test-db", async (req, res) => {
+        try {
+            const result = await client.query("SELECT current_database() AS db_name;");
+            console.log("[DB TEST] Connected to database:", result.rows[0].db_name);
+            res.json({ success: true, database: result.rows[0].db_name });
+        } catch (err) {
+            console.error("[DB TEST] Connection failed:", err);
+            res.status(500).json({ success: false, error: "Database connection failed", details: err.message });
+        }
+    });
+    
     
     app.get('/api/generate-qr/:productName/save', async (req, res) => {
         let { productName } = req.params;
