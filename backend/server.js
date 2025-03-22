@@ -28,7 +28,7 @@ app.use(cors({
 
 app.use((req, res, next) => {
     const frontendUrl = process.env.FRONTEND_URL || 'https://bharatbio-science.vercel.app';
-    const backendUrl = process.env.BACKEND_URL || 'https://bharatbioscience.com';
+    const backendUrl = process.env.BACKEND_URL || 'https://backendbharatbioscience-production.up.railway.app';
 
     const cspHeader = "default-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; " +
                       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " +

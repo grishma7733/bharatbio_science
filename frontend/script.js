@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             throw new Error("Invalid or missing product name");
         }
         
-        const API_BASE_URL = "https://bharatbioscience.com";
+        const API_BASE_URL = "https://backendbharatbioscience-production.up.railway.app";
         const API_URL = `${API_BASE_URL}/api/product/${encodeURIComponent(productName)}`;
 
         console.log("Fetching product details from:", API_URL);
