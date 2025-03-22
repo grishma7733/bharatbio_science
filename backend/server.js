@@ -69,6 +69,12 @@ client.connect()
     app.get("/api/product/:productName", async (req, res) => {
         const { productName } = req.params;
         const decodedName = decodeURIComponent(productName).replace(/_/g, " ").trim();
+
+        if (!decodedName) {
+            console.log("[LOG] Invalid product name received.");
+            return res.status(400).json({ success: false, error: "Invalid product name" });
+        }
+    
         console.log(`[LOG] Received request for product name: ${decodedName}`);
     
         try {
