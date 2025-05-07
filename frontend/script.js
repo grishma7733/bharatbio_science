@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("product-name").textContent = product.product_name || "N/A";
         document.getElementById("product-image").src = product.product_image_url || "default.jpg";
         document.getElementById("batch-no").textContent = product.batch_no || "N/A";
-        document.getElementById("manufacturing-date").textContent = product.manufacturing_date || "N/A";
-        document.getElementById("expiration-date").textContent = product.expiration_date || "N/A";
+        document.getElementById("manufacturing-date").textContent = product.manufacturing_date.split('T')[0] || "N/A";
+        document.getElementById("expiration-date").textContent = product.expiration_date.split('T')[0] || "N/A";
         // document.getElementById("mrp").textContent = product.mrp || "N/A";
         document.getElementById("registration-no").textContent = product.registration_no || "N/A";
         document.getElementById("manufacturer").textContent = product.manufacturer || "N/A";
