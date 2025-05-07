@@ -41,10 +41,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("marketed-by").textContent = product.marketed_by || "N/A";
         const logoEl = document.getElementById("cautionary-logo");
         if (product.cautionary_logo) {
-        logoEl.src = product.cautionary_logo;
+          logoEl.src = product.cautionary_logo;
+          logoEl.style.display = "block"; // show the image
         } else {
-        logoEl.style.display = "none";
-        }
+          logoEl.style.display = "none"; // keep it hidden
+        }        
         document.getElementById("email").textContent = product.email || "N/A";
         document.getElementById("phone").textContent = product.phone_no || "N/A";
         document.getElementById("address").textContent = product.address || "N/A";
