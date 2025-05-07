@@ -35,11 +35,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("batch-no").textContent = product.batch_no || "N/A";
         document.getElementById("manufacturing-date").textContent = product.manufacturing_date || "N/A";
         document.getElementById("expiration-date").textContent = product.expiration_date || "N/A";
-        document.getElementById("mrp").textContent = product.mrp || "N/A";
+        // document.getElementById("mrp").textContent = product.mrp || "N/A";
         document.getElementById("registration-no").textContent = product.registration_no || "N/A";
         document.getElementById("manufacturer").textContent = product.manufacturer || "N/A";
         document.getElementById("marketed-by").textContent = product.marketed_by || "N/A";
-        document.getElementById("antidote-statement").textContent = product.antidote_statement || "N/A";
+        document.getElementById("cautionary-logo").src = product.cautionary_logo;
         document.getElementById("email").textContent = product.email || "N/A";
         document.getElementById("phone").textContent = product.phone_no || "N/A";
         document.getElementById("address").textContent = product.address || "N/A";
