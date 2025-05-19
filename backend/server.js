@@ -99,6 +99,7 @@ client.connect()
                 registration_no: product.registration_no,
                 manufacturer: product.manufacturer,
                 marketed_by: product.marketed_by,
+                cautionary_logo:product.cautionary_logo,
                 antidote_statement: product.antidote_statement,
                 email: product.email,
                 phone_no: product.phone_no,
