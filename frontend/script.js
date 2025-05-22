@@ -31,7 +31,13 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Update HTML with product details
         document.getElementById("product-name").textContent = product.product_name || "N/A";
-        document.getElementById("product-image").src = product.product_image_url || "default.jpg";
+        // document.getElementById("product-image").src = product.product_image_url || "default.jpg";
+        const productImage = product.product_image_url;
+        document.getElementById("product-image").src =
+            productImage && productImage.startsWith("https://res.cloudinary.com")
+                ? productImage
+                : "default.jpg";
+
         document.getElementById("batch-no").textContent = product.batch_no || "N/A";
         document.getElementById("manufacturing-date").textContent = product.manufacturing_date.split('T')[0] || "N/A";
         document.getElementById("expiration-date").textContent = product.expiration_date.split('T')[0] || "N/A";
