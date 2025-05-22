@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
         // Update HTML with product details
-        document.getElementById("product-name").textContent = product.product_name || "N/A";
+        document.getElementById("product-name").textContent = product.product_name;
         // document.getElementById("product-image").src = product.product_image_url || "default.jpg";
         const productImage = product.product_image_url;
         document.getElementById("product-image").src =
