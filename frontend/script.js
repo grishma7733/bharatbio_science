@@ -31,17 +31,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         // Update HTML with product details
         document.getElementById("product-name").textContent = product.product_name;
-        // document.getElementById("product-image").src = product.product_image_url || "default.jpg";
-        const productImage = product.product_image_url;
-        document.getElementById("product-image").src =
-            productImage && productImage.startsWith("https://res.cloudinary.com/dgljjz2bc/image/upload")
-                ? productImage
-                : "default.jpg";
-
+        document.getElementById("product-image").src = product.product_image_url || "default.jpg";
         document.getElementById("batch-no").textContent = product.batch_no || "N/A";
         document.getElementById("manufacturing-date").textContent = product.manufacturing_date.split('T')[0] || "N/A";
         document.getElementById("expiration-date").textContent = product.expiration_date.split('T')[0] || "N/A";
-        // document.getElementById("mrp").textContent = product.mrp || "N/A";
         document.getElementById("registration-no").textContent = product.registration_no || "N/A";
         document.getElementById("manufacturer").textContent = product.manufacturer || "N/A";
         document.getElementById("marketed-by").textContent = product.marketed_by || "N/A";
@@ -49,7 +42,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("email").textContent = product.email || "N/A";
         document.getElementById("phone").textContent = product.phone_no || "N/A";
         document.getElementById("address").textContent = product.address || "N/A";
-
         document.getElementById("leaflet-link").href = product.leaflet_link || "#";
         document.getElementById("label-link").href = product.label_link || "#";
 
