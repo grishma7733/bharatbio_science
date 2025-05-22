@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         // document.getElementById("product-image").src = product.product_image_url || "default.jpg";
         const productImage = product.product_image_url;
         document.getElementById("product-image").src =
-            productImage && productImage.startsWith("https://res.cloudinary.com")
+            productImage && productImage.startsWith("https://res.cloudinary.com/dgljjz2bc/image/upload")
                 ? productImage
                 : "default.jpg";
 
