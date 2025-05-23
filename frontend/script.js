@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         document.getElementById("registration-no").textContent = product.registration_no || "N/A";
         document.getElementById("manufacturer").textContent = product.manufacturer || "N/A";
         document.getElementById("marketed-by").textContent = product.marketed_by || "N/A";
-        document.getElementById("cautionary-logo").src=product.cautionary_logo||"default.jpg";
+        // document.getElementById("cautionary-logo").src=product.cautionary_logo||"default.jpg";
         document.getElementById("email").textContent = product.email || "N/A";
         document.getElementById("phone").textContent = product.phone_no || "N/A";
         document.getElementById("address").textContent = product.address || "N/A";
