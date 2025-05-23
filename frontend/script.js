@@ -24,6 +24,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
         const product = await response.json();
+        console.log("Product JSON:", product);
+
 
         if (!product || Object.keys(product).length === 0) {
             throw new Error("Product not found");
