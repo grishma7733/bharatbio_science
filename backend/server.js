@@ -78,7 +78,7 @@ client.connect()
         console.log(`[LOG] Received request for product name: ${decodedName}`);
     
         try {
-            const result = await client.query("SELECT product_name,product_image_url,batch_no,manufacturing_date,expiration_date,mrp,registration_no,manufacturer,marketed_by,cautionary_logo,email,phone_no,address,leaflet_link,label_link FROM product_details WHERE LOWER(TRIM(product_name)) = LOWER(TRIM($1))", [decodedName]);
+            const result = await client.query("SELECT product_image_url,batch_no,manufacturing_date,expiration_date,mrp,registration_no,manufacturer,marketed_by,cautionary_logo,email,phone_no,address,leaflet_link,label_link FROM product_details WHERE LOWER(TRIM(product_name)) = LOWER(TRIM($1))", [decodedName]);
             console.log("Decoded product name:", decodedName);
             console.log("Query result:", result.rows);
             const rows = result.rows;
